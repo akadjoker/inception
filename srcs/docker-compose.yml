@@ -1,0 +1,81 @@
+version: '3.9'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: requirements/nginx/Dockerfile
+    container_name: nginx
+    image: nginx:42
+    env_file:
+      - .env
+    depends_on:
+      - wordpress
+    ports:
+      - "443:443"
+    networks:
+      - inception
+    volumes:
+      - wp-volume:/var/www/
+    restart: always
+
+  mariadb:
+    build:
+      context: .
+      dockerfile: requirements/mariadb/Dockerfile
+      args:
+        DB_NAME: ${DB_NAME}
+        USER_LOGIN: ${USER_LOGIN}
+        USER_PASSWORD: ${USER_PASSWORD}
+        DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    container_name: mariadb
+    image: mariadb:42
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    networks:
+      - inception
+    volumes:
+      - db-volume:/var/lib/mysql
+    restart: always
+
+  wordpress:
+    build:
+      context: .
+      dockerfile: requirements/wordpress/Dockerfile
+      args:
+        DB_NAME: ${DB_NAME}
+        USER_LOGIN: ${USER_LOGIN}
+        USER_PASSWORD: ${USER_PASSWORD}
+    container_name: wordpress
+    image: wordpress:42
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+    volumes:
+      - wp-volume:/var/www/
+    restart: always
+
+  
+
+volumes:
+  wp-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/${USER}/data/wordpress
+
+  db-volume:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/${USER}/data/mariadb
+
+networks:
+    inception:
+        name: 42network 
+        driver: bridge

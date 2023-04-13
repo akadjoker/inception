@@ -1,0 +1,19 @@
+DOMAIN_NAME=lrosa-do.42.fr
+
+
+WP_TITLE=Inseption
+
+DB_NAME=wordpress
+DB_ROOT_PASSWORD=12345
+
+
+ADMIN_LOGIN   =boss
+ADMIN_PASSWORD=123456
+ADMIN_EMAIL   =boss@42.fr
+
+USER_LOGIN   =lrosa-do
+USER_PASSWORD=12345
+USER_EMAIL   =lrosa-do@42.fr
+
+NG_CERT=./requirements/nginx/tools/nginx.crt
+NG_KEY=./requirements/nginx/tools/nginx.key
